@@ -16,6 +16,22 @@ func contextWithTimeout() {
 	// Goroutine thực hiện task mất 2 giây
 	
 	// Select giữa done channel và context.Done()
+	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
+	defer cancel()
+
+	done := make(chan struct{})
+	go func() {
+		// Simulate long task
+		time.Sleep(2 * time.Second)
+		done <- struct{}{}
+	}()
+
+	select {
+	case <-done:
+		fmt.Println("Task completed")
+	case <-ctx.Done():
+		fmt.Println("Task cancelled:", ctx.Err())
+	}
 }
 
 // TODO: Context với cancel
@@ -27,6 +43,24 @@ func contextWithCancel() {
 	// Lắng nghe ctx.Done()
 	
 	// Cancel sau 2 giây
+	ctx, cancel := context.WithCancel(context.Background())
+
+	go func() {
+		for {
+			select {
+			case <-ctx.Done():
+				fmt.Println("Goroutine stopped:", ctx.Err())
+				return
+			default:
+				fmt.Println("Goroutine is running")
+				time.Sleep(500 * time.Millisecond)
+			}
+		}
+	}()
+
+	time.Sleep(2 * time.Second)
+	cancel()
+	time.Sleep(1 * time.Second) // Wait for goroutine to finish
 }
 
 // TODO: Context với values
@@ -45,6 +79,9 @@ func processRequest(ctx context.Context) {
 	// userID := ctx.Value("userID")
 	// requestID := ctx.Value("requestID")
 	// In ra values
+	userID := ctx.Value("userID")
+	requestID := ctx.Value("requestID")
+	fmt.Printf("Processing request %s for user %d\n", requestID, userID)
 }
 
 func exercise8() {

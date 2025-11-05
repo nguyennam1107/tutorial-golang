@@ -28,7 +28,9 @@ func fetchURL(url string) (string, error) {
 	// Implement here
 	// Simulate HTTP request với time.Sleep
 	// Return fake content hoặc error
-	return "", nil
+	time.Sleep(2 * time.Second) // Simulate network delay
+	// For simplicity, return fake content
+	return fmt.Sprintf("Content of %s", url), nil
 }
 
 // TODO: Worker function
@@ -37,6 +39,15 @@ func scrapeWorker(id int, urls <-chan string, results chan<- ScrapeResult) {
 	// Nhận URL từ channel
 	// Fetch với timeout
 	// Gửi result vào results channel
+	for url := range urls {
+		content, err := fetchURL(url)
+		result := ScrapeResult{
+			URL:     url,
+			Content: content,
+			Error:   err,
+		}
+		results <- result
+	}
 }
 
 func challenge1() {
@@ -58,14 +69,33 @@ func challenge1() {
 	// TODO: Setup channels
 	// urlChan := make(chan string, len(urls))
 	// results := make(chan ScrapeResult, len(urls))
+	urlChan := make(chan string, len(urls))
+	results := make(chan ScrapeResult, len(urls))
 
 	// TODO: Start worker pool (5 workers)
+	for i := 0; i < 5; i++ {
+		go scrapeWorker(i, urlChan, results)
+	}
 
 	// TODO: Send URLs
+	for _, url := range urls {
+		urlChan <- url
+	}
+	close(urlChan)
 
 	// TODO: Collect results
+	for i := 0; i < len(urls); i++ {
+		result := <-results
+		if result.Error != nil {
+			fmt.Printf("Error scraping %s: %v\n", result.URL, result.Error)
+		} else {
+			fmt.Printf("Scraped %s: %s\n", result.URL, result.Content)
+		}
+	}
+	close(results)
 
 	// TODO: Print summary
+	fmt.Println("Scraping completed.")
 }
 
 func main() {

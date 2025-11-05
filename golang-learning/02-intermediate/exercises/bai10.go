@@ -19,16 +19,32 @@ YÊU CẦU:
 type RateLimiter struct {
 	// Implement here
 	// Sử dụng ticker channel
+	ticker *time.Ticker
+	requests chan struct{}
+
 }
 
 func NewRateLimiter(requestsPerSecond int) *RateLimiter {
-	// Implement here
-	return nil
+	ticker := time.NewTicker(time.Second / time.Duration(requestsPerSecond))
+	requests := make(chan struct{}, requestsPerSecond)
+	go func() {
+		for range ticker.C {
+			select {
+			case requests <- struct{}{}:
+			default:
+			}
+		}
+	}()
+	return &RateLimiter{
+		ticker:  ticker,
+		requests: requests,
+	}
 }
 
 func (rl *RateLimiter) Allow() {
 	// Implement here
 	// Block cho đến khi có slot available
+	<-rl.requests
 }
 
 // TODO: Test function
@@ -42,9 +58,17 @@ func challenge2() {
 
 	// TODO: Create rate limiter (5 req/sec)
 	// limiter := NewRateLimiter(5)
+	limiter := NewRateLimiter(5)
 
 	// TODO: Make 20 requests
 	// Observe rate limiting in action
+	for i := 1; i <= 20; i++ {
+		limiter.Allow()
+		go makeRequest(i)
+	}
+
+	// Wait to allow all requests to complete
+	time.Sleep(5 * time.Second)
 }
 
 func main() {
