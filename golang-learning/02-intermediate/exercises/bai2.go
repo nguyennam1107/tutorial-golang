@@ -10,8 +10,6 @@ import (
 // TODO: Producer - gửi numbers vào channel
 func producer(ch chan<- int, count int) {
 	// Implement here
-	// Gửi số từ 1 đến count vào channel
-	// Close channel khi done
 	for i := 1; i <= count; i++ {
 		ch <- i
 		time.Sleep(100 * time.Millisecond) 
@@ -22,8 +20,6 @@ func producer(ch chan<- int, count int) {
 // TODO: Consumer - nhận numbers từ channel
 func consumer(ch <-chan int) {
 	// Implement here
-	// Nhận và in ra numbers từ channel
-	// Sử dụng range để read until closed
 	for num := range ch {
 		fmt.Println("Received:", num)
 	}
@@ -32,9 +28,6 @@ func consumer(ch <-chan int) {
 // TODO: Buffered channel example
 func bufferedChannelDemo() {
 	// Implement here
-	// Tạo buffered channel với capacity 5
-	// Gửi 5 messages mà không cần goroutine
-	// Đọc và in ra messages
 	buffered := make(chan string, 5)
 	buffered <- "msg1"
 	buffered <- "msg2"

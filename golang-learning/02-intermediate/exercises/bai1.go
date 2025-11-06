@@ -12,13 +12,11 @@ func printNumber(n int) {
 	// Implement here
 	fmt.Println(n)
 	time.Sleep(100 * time.Millisecond)
-	// In ra số n và sleep 100ms
 }
 
 // TODO: So sánh sequential vs concurrent
 func sequentialExecution() {
 	// Implement here
-	// Gọi printNumber tuần tự 10 lần
 	for i := 1; i <= 10; i++ {
 		printNumber(i)
 	}
@@ -26,11 +24,9 @@ func sequentialExecution() {
 
 func concurrentExecution() {
 	// Implement here
-	// Gọi printNumber với goroutines 10 lần
 	for i := 1; i <= 10; i++ {
 		go printNumber(i)
 	}
-	// Nhớ wait để goroutines hoàn thành
 	time.Sleep(2 * time.Second)
 }
 

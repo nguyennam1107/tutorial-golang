@@ -26,19 +26,13 @@ type ScrapeResult struct {
 // TODO: Simulate fetch URL
 func fetchURL(url string) (string, error) {
 	// Implement here
-	// Simulate HTTP request với time.Sleep
-	// Return fake content hoặc error
-	time.Sleep(2 * time.Second) // Simulate network delay
-	// For simplicity, return fake content
+	time.Sleep(2 * time.Second) 
 	return fmt.Sprintf("Content of %s", url), nil
 }
 
 // TODO: Worker function
 func scrapeWorker(id int, urls <-chan string, results chan<- ScrapeResult) {
 	// Implement here
-	// Nhận URL từ channel
-	// Fetch với timeout
-	// Gửi result vào results channel
 	for url := range urls {
 		content, err := fetchURL(url)
 		result := ScrapeResult{
@@ -67,8 +61,6 @@ func challenge1() {
 	}
 
 	// TODO: Setup channels
-	// urlChan := make(chan string, len(urls))
-	// results := make(chan ScrapeResult, len(urls))
 	urlChan := make(chan string, len(urls))
 	results := make(chan ScrapeResult, len(urls))
 

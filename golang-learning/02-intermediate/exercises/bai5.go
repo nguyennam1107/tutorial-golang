@@ -11,10 +11,6 @@ import (
 func waitGroupExample() {
 	// Implement here
 	var wg sync.WaitGroup
-
-	// Start 5 goroutines
-	// Mỗi goroutine in ra số của nó
-	// Sử dụng wg.Add(), wg.Done(), wg.Wait()
 	numGoroutines := 5
 	wg.Add(numGoroutines)
 
@@ -37,8 +33,6 @@ var (
 
 func incrementWithoutMutex(wg *sync.WaitGroup) {
 	// Implement here
-	// Increment counter 1000 lần
-	// KHÔNG dùng mutex (sẽ có race condition)
 	for i := 0; i < 1000; i++ {
 		counter++
 	}
@@ -47,8 +41,6 @@ func incrementWithoutMutex(wg *sync.WaitGroup) {
 
 func incrementWithMutex(wg *sync.WaitGroup) {
 	// Implement here
-	// Increment counter 1000 lần
-	// SỬ DỤNG mutex để protect counter
 	for i := 0; i < 1000; i++ {
 		mu.Lock()
 		counter++
@@ -68,8 +60,6 @@ func exercise5() {
 	counter = 0
 	var wg1 sync.WaitGroup
 	// TODO: Start 10 goroutines gọi incrementWithoutMutex
-	// Mỗi goroutine increment 1000 lần
-	// Expected: 10000, Actual: < 10000 (do race)
 	wg1.Wait()
 	fmt.Printf("Final counter (without mutex): %d\n", counter)
 
@@ -78,7 +68,10 @@ func exercise5() {
 	counter = 0
 	var wg2 sync.WaitGroup
 	// TODO: Start 10 goroutines gọi incrementWithMutex
-	// Expected: 10000, Actual: 10000
+	for i := 1; i <= 10; i++ {
+		wg2.Add(1)
+		go incrementWithMutex(&wg2)
+	}
 	wg2.Wait()
 	fmt.Printf("Final counter (with mutex): %d\n", counter)
 }

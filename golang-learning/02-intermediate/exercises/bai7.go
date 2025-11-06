@@ -23,7 +23,6 @@ func generate7(nums ...int) <-chan int {
 // TODO: Square numbers (worker)
 func square7(in <-chan int) <-chan int {
 	// Implement here
-	// Mỗi worker process từ in channel
 	out := make(chan int)
 	go func() {
 		defer close(out)
@@ -41,7 +40,6 @@ func merge(channels ...<-chan int) <-chan int {
 	out := make(chan int)
 
 	// TODO: Start goroutine cho mỗi channel
-	// Đọc từ channel và gửi vào out
 	for _, ch := range channels {
 		wg.Add(1)
 		go func(c <-chan int) {

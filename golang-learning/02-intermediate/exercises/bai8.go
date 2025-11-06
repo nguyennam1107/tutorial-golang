@@ -11,17 +11,11 @@ import (
 // TODO: Context với timeout
 func contextWithTimeout() {
 	// Implement here
-	// Tạo context với timeout 1 giây
-	
-	// Goroutine thực hiện task mất 2 giây
-	
-	// Select giữa done channel và context.Done()
 	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
 	defer cancel()
 
 	done := make(chan struct{})
 	go func() {
-		// Simulate long task
 		time.Sleep(2 * time.Second)
 		done <- struct{}{}
 	}()
@@ -37,12 +31,6 @@ func contextWithTimeout() {
 // TODO: Context với cancel
 func contextWithCancel() {
 	// Implement here
-	// Tạo context với cancel
-	
-	// Goroutine chạy vô hạn
-	// Lắng nghe ctx.Done()
-	
-	// Cancel sau 2 giây
 	ctx, cancel := context.WithCancel(context.Background())
 
 	go func() {
@@ -60,17 +48,14 @@ func contextWithCancel() {
 
 	time.Sleep(2 * time.Second)
 	cancel()
-	time.Sleep(1 * time.Second) // Wait for goroutine to finish
+	time.Sleep(1 * time.Second) 
 }
 
 // TODO: Context với values
 func contextWithValues() {
 	// Implement here
-	// Tạo context với values
 	ctx := context.WithValue(context.Background(), "userID", 123)
 	ctx = context.WithValue(ctx, "requestID", "abc-123")
-	
-	// Function nhận context và in values
 	processRequest(ctx)
 }
 
